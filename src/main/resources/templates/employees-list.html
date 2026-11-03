@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Учёт сотрудников</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+        th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+        th { background: #f0f0f0; }
+        label { display: block; margin-top: 12px; font-weight: bold; }
+        input[type=text], input[type=number], select { padding: 6px; width: 320px; }
+        button, .btn { margin-top: 12px; padding: 6px 14px; }
+        .error { color: #c0392b; font-size: 0.9em; }
+        .inactive { color: #888; }
+        form.inline { display: inline; }
+        .filters input, .filters select { width: auto; margin-right: 8px; }
+    </style>
+</head>
+<body>
+<h1>Учёт сотрудников</h1>
+
+<form class="filters" th:action="@{/employees}" method="get">
+    <input type="text" name="name" placeholder="Поиск по ФИО" th:value="${name}">
+    <select name="active">
+        <option value="all" th:selected="${active == 'all'}">Все</option>
+        <option value="true" th:selected="${active == 'true'}">Активные</option>
+        <option value="false" th:selected="${active == 'false'}">Неактивные</option>
+    </select>
+    <button type="submit">Найти</button>
+    <a th:href="@{/employees}">Сбросить</a>
+</form>
+
+<p><a th:href="@{/employees/add}">Добавить сотрудника</a></p>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>ФИО</th>
+        <th>Email</th>
+        <th>Телефон</th>
+        <th>Должность</th>
+        <th>Зарплата</th>
+        <th>Активен</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="e : ${employees}" th:classappend="${!e.active} ? 'inactive'">
+        <td th:text="${e.id}">1</td>
+        <td th:text="${e.fullName}">Иванов Иван Иванович</td>
+        <td th:text="${e.email}">ivanov@example.com</td>
+        <td th:text="${e.phone}">+79991234567</td>
+        <td th:text="${e.position}">Разработчик</td>
+        <td th:text="${#numbers.formatDecimal(e.salary, 1, 'WHITESPACE', 2, 'POINT')}">100000.00</td>
+        <td th:text="${e.active} ? 'Да' : 'Нет'">Да</td>
+        <td>
+            <a th:href="@{/employees/edit/{id}(id=${e.id})}">Изменить</a>
+            <form class="inline" th:action="@{/employees/delete/{id}(id=${e.id})}" method="post"
+                  onsubmit="return confirm('Удалить сотрудника?');">
+                <button type="submit">Удалить</button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(employees)}">
+        <td colspan="8">Сотрудники не найдены</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

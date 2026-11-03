@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Сотрудник</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+        th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+        th { background: #f0f0f0; }
+        label { display: block; margin-top: 12px; font-weight: bold; }
+        input[type=text], input[type=number], select { padding: 6px; width: 320px; }
+        button, .btn { margin-top: 12px; padding: 6px 14px; }
+        .error { color: #c0392b; font-size: 0.9em; }
+        .inactive { color: #888; }
+        form.inline { display: inline; }
+        .filters input, .filters select { width: auto; margin-right: 8px; }
+    </style>
+</head>
+<body>
+<h1 th:text="${title}">Сотрудник</h1>
+
+<form th:action="@{/employees/add}" th:object="${employee}" method="post" novalidate>
+    <input type="hidden" th:field="*{id}">
+
+    <label for="fullName">ФИО</label>
+    <input type="text" id="fullName" th:field="*{fullName}">
+    <div class="error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+
+    <label for="email">Email</label>
+    <input type="text" id="email" th:field="*{email}" placeholder="name@example.com">
+    <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+
+    <label for="phone">Телефон</label>
+    <input type="text" id="phone" th:field="*{phone}" placeholder="+79991234567">
+    <div class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+
+    <label for="position">Должность</label>
+    <input type="text" id="position" th:field="*{position}">
+    <div class="error" th:if="${#fields.hasErrors('position')}" th:errors="*{position}"></div>
+
+    <label for="salary">Зарплата</label>
+    <input type="number" id="salary" step="0.01" th:field="*{salary}">
+    <div class="error" th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}"></div>
+
+    <label><input type="checkbox" th:field="*{active}"> Активен</label>
+
+    <button type="submit">Сохранить</button>
+    <a th:href="@{/employees}">Отмена</a>
+</form>
+</body>
+</html>
